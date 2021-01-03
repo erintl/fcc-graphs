@@ -13,6 +13,6 @@ public class Edge {
 
     @Override
     public String toString() {
-        return "(" + from + ", " + to + ")";
+        return "(" + from + ", " + to + ", " + weight + ")";
     }
 }

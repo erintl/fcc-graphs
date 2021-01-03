@@ -68,6 +68,27 @@ public class DirectedGraph {
         return topOrder;
     }
 
+    public Map<String, Integer> sssp(String start) {
+        Map<String, Integer> distances = new HashMap<>();
+        List<String> topOrder = getTopOrdering();
+        for (String key : graph.keySet()) {
+            distances.putIfAbsent(key, null);
+        }
+        distances.put(start, 0);
+
+        for (String node : topOrder) {
+            Integer currentDistance = distances.get(node);
+            if (currentDistance != null) {
+                Set<Edge> adjEdges = graph.get(node);
+                for (Edge edge : adjEdges) {
+                    int newDistance = currentDistance + edge.weight;
+                    distances.merge(edge.to, newDistance, Math::min);
+                }
+            }
+        }
+        return distances;
+    }
+
     private void topDfsUtil(String node, List<String> visited, List<String> topOrder) {
         if (visited.contains(node)) {
             return;
@@ -83,9 +104,10 @@ public class DirectedGraph {
         String[] parts = line.split(" ");
         String from = parts[0];
         String to = parts[1];
+        int weight = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
 
         addVertex(from);
         addVertex(to);
-        addEdge(from, to, 0);
+        addEdge(from, to, weight);
     }
 }

@@ -3,8 +3,9 @@ import graphs.Graph;
 
 public class SimpleGraphs {
     public static void main(String[] args) {
-        DirectedGraph graph = new DirectedGraph("input/top_sort.txt");
-        System.out.println(graph.getTopOrdering());
+        DirectedGraph graph = new DirectedGraph("input/dag_sssp.txt");
+        graph.printGraph();
+        System.out.println(graph.sssp("A"));
     }
 
     public static void setupConnectedComponents(Graph graph) {
