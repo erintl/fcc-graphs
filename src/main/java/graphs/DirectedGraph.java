@@ -31,7 +31,7 @@ public class DirectedGraph {
         graph.putIfAbsent(label, new LinkedHashSet<>());
     }
 
-    public void addEdge(String from, String to, int weight) {
+    public void addEdge(String from, String to, double weight) {
         Edge edge = new Edge(from, to, weight);
         Set<Edge> edges = graph.get(from);
         edges.add(edge);
@@ -68,20 +68,20 @@ public class DirectedGraph {
         return topOrder;
     }
 
-    public Map<String, Integer> sssp(String start) {
-        Map<String, Integer> distances = new HashMap<>();
+    public Map<String, Double> sssp(String start) {
+        Map<String, Double> distances = new HashMap<>();
         List<String> topOrder = getTopOrdering();
         for (String key : graph.keySet()) {
             distances.putIfAbsent(key, null);
         }
-        distances.put(start, 0);
+        distances.put(start, 0.0);
 
         for (String node : topOrder) {
-            Integer currentDistance = distances.get(node);
+            Double currentDistance = distances.get(node);
             if (currentDistance != null) {
                 Set<Edge> adjEdges = graph.get(node);
                 for (Edge edge : adjEdges) {
-                    int newDistance = currentDistance + edge.weight;
+                    double newDistance = currentDistance + edge.weight;
                     distances.merge(edge.to, newDistance, Math::min);
                 }
             }
@@ -104,10 +104,65 @@ public class DirectedGraph {
         String[] parts = line.split(" ");
         String from = parts[0];
         String to = parts[1];
-        int weight = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
+        double weight = parts.length > 2 ? Double.parseDouble(parts[2]) : 0.0;
 
         addVertex(from);
         addVertex(to);
         addEdge(from, to, weight);
+    }
+
+    public Map<String, Double> dijkstraShortestPath(String start) {
+        List<String> visited = new ArrayList<>();
+        Map<String, Double> distances = new HashMap<>();
+        PriorityQueue<DValue> priorityQueue = new PriorityQueue<>();
+        for (String key : graph.keySet()) {
+            distances.putIfAbsent(key, Double.POSITIVE_INFINITY);
+        }
+        distances.put(start, 0.0);
+        priorityQueue.add(new DValue(start, 0.0));
+        while (!priorityQueue.isEmpty()) {
+            DValue currentNode = priorityQueue.poll();
+            System.out.println(currentNode);
+            visited.add(currentNode.getLabel());
+            for (Edge edge : graph.get(currentNode.getLabel())) {
+                if (visited.contains(edge.to)) {
+                    continue;
+                }
+                double newDistance = distances.get(currentNode.getLabel()) + edge.weight;
+                System.out.println("New Distance: " + currentNode.getLabel() + ":" + edge.to + "-" + newDistance);
+                if (newDistance < distances.get(edge.to)) {
+                    distances.put(edge.to, newDistance);
+                    priorityQueue.add(new DValue(edge.to, newDistance));
+                }
+            }
+        }
+        return distances;
+    }
+
+    public Map<String, Double> bellmanFord(String start) {
+        Map<String, Double> distances = new HashMap<>();
+        List<Edge> edges = new ArrayList<>();
+        for (String key : graph.keySet()) {
+            edges.addAll(graph.get(key));
+            distances.putIfAbsent(key, Double.POSITIVE_INFINITY);
+        }
+        distances.put(start, 0.0);
+
+        for (int v = 0; v < graph.size() - 1; v++) {
+            for (Edge edge : edges) {
+                if (distances.get(edge.from) + edge.weight < distances.get(edge.to)) {
+                    distances.put(edge.to, distances.get(edge.from) + edge.weight);
+                }
+            }
+        }
+
+        for (int v = 0; v < graph.size() - 1; v++) {
+            for (Edge edge : edges) {
+                if (distances.get(edge.from) + edge.weight < distances.get(edge.to)) {
+                    distances.put(edge.to, Double.NEGATIVE_INFINITY);
+                }
+            }
+        }
+        return distances;
     }
 }

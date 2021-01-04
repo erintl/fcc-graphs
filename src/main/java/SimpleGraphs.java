@@ -3,9 +3,9 @@ import graphs.Graph;
 
 public class SimpleGraphs {
     public static void main(String[] args) {
-        DirectedGraph graph = new DirectedGraph("input/dag_sssp.txt");
+        DirectedGraph graph = new DirectedGraph("input/bellman_ford1.txt");
         graph.printGraph();
-        System.out.println(graph.sssp("A"));
+        System.out.println(graph.bellmanFord("0"));
     }
 
     public static void setupConnectedComponents(Graph graph) {

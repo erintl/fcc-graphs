@@ -1,4 +1,4 @@
-# Free Code Camp Graph Theory Course
+# Free Code Camp Graph Course
 
 <https://www.youtube.com/watch?v=09_LlHjoEiY>
 
