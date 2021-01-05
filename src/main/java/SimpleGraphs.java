@@ -3,9 +3,10 @@ import graphs.Graph;
 
 public class SimpleGraphs {
     public static void main(String[] args) {
-        DirectedGraph graph = new DirectedGraph("input/bellman_ford1.txt");
+        DirectedGraph graph = new DirectedGraph("input/bridge_test.txt", false);
         graph.printGraph();
-        System.out.println(graph.bellmanFord("0"));
+        System.out.println(graph.findArticulationPoints());
+
     }
 
     public static void setupConnectedComponents(Graph graph) {
